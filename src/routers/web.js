@@ -39,19 +39,30 @@ router.get(
 );
 // router user
 router.get(
-  "/admin/user",
+  "/admin/users",
   AuthMiddleware.checkAdmin,
   UserController.index
 );
+router.get(
+  "/admin/users/create",
+  AuthMiddleware.checkAdmin,
+  UserController.create
+);
+router.post(
+  "/admin/users/store",
+  AuthMiddleware.checkAdmin,
+  UserController.store
+);
+
 // router category
 router.get(
-  "/admin/category",
+  "/admin/categories",
   AuthMiddleware.checkAdmin,
   CategoryController.index
 );
 // router comment
 router.get(
-  "/admin/comment",
+  "/admin/comments",
   AuthMiddleware.checkAdmin,
   CommentController.index
 );
