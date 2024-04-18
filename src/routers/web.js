@@ -53,6 +53,21 @@ router.post(
   AuthMiddleware.checkAdmin,
   UserController.store
 );
+router.get(
+  "/admin/users/edit-:id",
+  AuthMiddleware.checkAdmin,
+  UserController.edit
+);
+router.post(
+  "/admin/users/edit-:id",
+  AuthMiddleware.checkAdmin,
+  UserController.update
+);
+router.get(
+  "/admin/users/del-:id",
+  AuthMiddleware.checkAdmin,
+  UserController.del
+);
 
 // router category
 router.get(

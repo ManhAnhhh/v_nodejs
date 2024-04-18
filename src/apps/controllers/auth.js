@@ -15,6 +15,7 @@ const postLogin = async (req, res) => {
     req.session.password = password;
     res.redirect("/admin/dashboard");
   } else {
+    console.log("object");
     res.render("admin/login", { data: { error: "Tài khoản không hợp lệ!" } });
   }
 
