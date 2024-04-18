@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <%- include("layouts/head", {title: "Mua hàng thành công" })%>
+
+  <body>
+    <%- include("layouts/header")%>
+
+    <!--	Body	-->
+    <div id="body">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <%- include("layouts/menu")%>
+          </div>
+        </div>
+        <div class="row">
+          <div id="main" class="col-lg-8 col-md-12 col-sm-12">
+            <%- include("layouts/slider")%>
+
+            <!--	Order Success	-->
+            <div id="order-success">
+              <div class="row">
+                <div
+                  id="order-success-img"
+                  class="col-lg-3 col-md-3 col-sm-12"
+                ></div>
+                <div id="order-success-txt" class="col-lg-9 col-md-9 col-sm-12">
+                  <h3>bạn đã đặt hàng thành công !</h3>
+                  <p>
+                    Vui lòng kiểm tra email để xem lại thông tin đơn hàng của
+                    mình.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!--	End Order Success	-->
+          </div>
+          <%- include("layouts/sidebar")%>
+        </div>
+      </div>
+      <button id="btn-a">click me</button>
+      <div id="text"></div>
+    </div>
+    <!--	End Body	-->
+
+    <%- include("layouts/footer")%>
+  </body>
+  <script>
+    document.querySelector("#btn-a").onclick = function() {
+      document.querySelector("#text").innerHTML = "a";
+    };
+  </script>
+</html>
