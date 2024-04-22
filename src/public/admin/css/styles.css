@@ -928,7 +928,13 @@ h1.page-header {
 	height: 65px;
 	overflow: scroll;
 }
-
+.item-table {
+	text-align: center;
+  line-height: 33px !important;
+}
+.action-item-table {
+	text-align: center;
+}
 
 
 

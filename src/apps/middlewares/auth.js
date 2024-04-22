@@ -18,8 +18,23 @@ const checkLogout = (req, res, next) => {
   }
   next();
 }
+
+const checkAccountForget = (req, res, next) => {
+  if (!req.session.emailChanged) {
+    res.redirect("/forget");
+  }
+  next();
+}
+const checkLoginUser = (req, res, next) => {
+  if (req.session.emailUser || req.session.passwordUser) {
+    res.redirect("/");
+  }
+  next();
+}
 module.exports = {
   checkAdmin,
   checkLogin,
-  checkLogout
+  checkLogout,
+  checkAccountForget,
+  checkLoginUser
 };

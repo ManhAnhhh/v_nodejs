@@ -34,22 +34,22 @@
                                     <table data-toolbar="#toolbar" data-toggle="table">
                                         <thead>
                                             <tr>
-                                                <th data-field="id" data-sortable="true">ID</th>
-                                                <th data-field="name" data-sortable="true">Họ & Tên</th>
-                                                <th data-field="price" data-sortable="true">Email</th>
-                                                <th>Quyền</th>
-                                                <th>Hành động</th>
+                                                <th class="item-table" data-field="id" data-sortable="true">ID</th>
+                                                <th class="item-table" data-field="name" data-sortable="true">Họ & Tên</th>
+                                                <th class="item-table" data-field="price" data-sortable="true">Email</th>
+                                                <th class="item-table">Quyền</th>
+                                                <th class="item-table">Hành động</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <% let count = 1 %>
                                             <% for(user of users) {%>
                                                 <tr>
-                                                    <td><%= count %></td>
-                                                    <td><%= user.full_name %></td>
-                                                    <td><%= user.email %></td>
-                                                    <td><span class="label label-<%= user.role == "admin" ? "danger" :"info" %>"><%= user.role == "admin" ? "Admin" :"Khách hàng" %></span></td>
-                                                    <td class="form-group">
+                                                    <td class="item-table"><%= count %></td>
+                                                    <td class="item-table"><%= user.full_name %></td>
+                                                    <td class="item-table"><%= user.email %></td>
+                                                    <td class="item-table"><span class="label label-<%= user.role == "admin" ? "danger" :"info" %>"><%= user.role == "admin" ? "Admin" :"Khách hàng" %></span></td>
+                                                    <td class="form-group action-item-table">
                                                         <a href="/admin/users/edit-<%= user._id%>" class="btn btn-primary"><i
                                                                 class="glyphicon glyphicon-pencil"></i></a>
                                                         <a href="/admin/users/del-<%= user._id%>" class="btn btn-danger"><i

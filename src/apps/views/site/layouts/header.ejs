@@ -5,18 +5,35 @@
             <div id="logo" class="col-lg-3 col-md-3 col-sm-12">
                 <h1><a href="/"><img class="img-fluid" src="images/logo.png"></a></h1>
             </div>
-            <div id="search" class="col-lg-6 col-md-6 col-sm-12">
+            <div id="search" class="col-lg-5 col-md-5 col-sm-12">
                 <form action="/search" class="form-inline">
                     <input name="keyword" class="form-control mt-3" type="search" placeholder="Tìm kiếm"
                         aria-label="Search">
                     <button class="btn btn-danger mt-3" type="submit">Tìm kiếm</button>
                 </form>
             </div>
-            <div id="cart" class="col-lg-3 col-md-3 col-sm-12">
-                <a class="mt-4 mr-2" href="/cart">giỏ hàng</a><span class="mt-3">
-                    <%=totalCartItems%>
-                </span>
-            </div>
+            <% if(emailUserAcc){ %>
+                <div id="logout" class="col-lg-4 col-md-4 col-sm-12">
+                    <span>
+                        <%= emailUserAcc[0].toUpperCase() %>
+                    </span>
+                    <a class="mt-3 mx-2 btn" href="/logout">Đăng xuất</a>
+                    <div id="cart">
+                        <a class="mt-4 mr-2" href="/cart">giỏ hàng</a>
+                        <span class="mt-3">
+                            <%=totalCartItems%>
+                        </span>
+                    </div>
+                </div>
+
+                <% } else{ %>
+                    <div id="login" class="col-lg-4 col-md-4 col-sm-12">
+                        <a class="mt-3 mx-2 btn" href="/login">Đăng nhập</a>
+                        <a class="mt-3 mx-2 btn" href="/signup">Đăng ký</a>
+                    </div>
+
+                    <% } %>
+
         </div>
     </div>
     <!-- Toggler/collapsibe Button -->

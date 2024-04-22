@@ -8,7 +8,7 @@ const pagination = require("../../common/pagination");
 
 const index = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
-  const limit = 10;
+  const limit = parseInt(req.query.limit) ||10;
   const skip = page * limit - limit;
   const totalRows = await ProductModel.find().countDocuments(); // tong so product
   const totalPages = Math.ceil(totalRows / limit);

@@ -1,5 +1,5 @@
 const index = (req,res) => {
-  res.send("ads");
+  res.render("admin/banners/banner")
 }
 module.exports = {
   index

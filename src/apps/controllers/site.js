@@ -1,6 +1,7 @@
 const ProductModel = require("../models/product");
 const CategoryModel = require("../models/category");
 const CommentModel = require("../models/comment");
+const UserModel = require("../models/user");
 const formetter = require("../../../lib");
 const moment = require("moment");
 
@@ -8,6 +9,154 @@ const transporter = require("../../common/transporter");
 const config = require("config");
 const ejs = require("ejs");
 const path = require("path");
+
+const logout = async (req, res) => {
+  delete req.session.emailUser;
+  delete req.session.passwordUser;
+  res.redirect("/");
+};
+
+const login = async (req, res) => {
+  res.render("site/signin", { data: { error: [] } });
+};
+const postLogin = async (req, res) => {
+  const { email, password } = req.body;
+  const message = [];
+  for (const field in req.body) {
+    if (req.body[field] === "" || req.body[field] === undefined) {
+      message.push(`${field} không được để trống!`);
+    }
+  }
+  if (message.length > 0) {
+    res.render("site/signin", { data: { error: message } });
+    return;
+  }
+  const user = await UserModel.find({ email, role: "member" });
+  if (user.length == 0) {
+    message[0] = "Tài khoản không đúng";
+    res.render("site/signin", { data: { error: message } });
+    return;
+  }
+  if (user[0].password != password) {
+    message[0] = "Mật khẩu không đúng";
+    res.render("site/signin", { data: { error: message } });
+    return;
+  }
+  req.session.emailUser = email;
+  req.session.passwordUser = password;
+  res.redirect("/");
+};
+const signup = async (req, res) => {
+  res.render("site/signup", { data: { error: [] } });
+};
+const createUser = async (req, res) => {
+  const { full_name, email, password, confirmPassword } = req.body;
+  const role = "member";
+  const message = [];
+  for (const field in req.body) {
+    if (req.body[field] === "" || req.body[field] === undefined) {
+      message.push(`${field} cannot be empty`);
+    }
+  }
+  if (message.length > 0) {
+    res.render("site/signup", { data: { error: message } });
+    return;
+  }
+  const pattent = /^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9.-]+\.com$/;
+  if (!pattent.test(email)) {
+    message[0] = "Email sai định dạng (vd: a@gmail.com)";
+    res.render("site/signup", { data: { error: message } });
+    return;
+  }
+  if (password != confirmPassword) {
+    message[0] = "Xác nhận mật khẩu không đúng";
+    res.render("site/signup", { data: { error: message } });
+    return;
+  }
+  const checkUser = await UserModel.find({ email }).countDocuments();
+  if (checkUser == 1) {
+    message[0] = "Email đã tồn tại";
+    res.render("site/signup", { data: { error: message } });
+    return;
+  }
+  const user = {
+    full_name,
+    email,
+    password,
+    role,
+  };
+  await new UserModel(user).save();
+  res.redirect("/login");
+};
+
+const forget = async (req, res) => {
+  res.render("site/forgets/forget", { data: {} });
+};
+const validateEmail = async (req, res) => {
+  const email = req.body.email;
+  req.session.emailChanged = email;
+  const user = await UserModel.find({ email });
+  console.log(user);
+  if (user.length == 0 || user[0].role == "admin") {
+    res.render("site/forgets/forget", {
+      data: { error: "Email chưa đăng ký tài khoản " },
+    });
+    return;
+  }
+  const otp = Math.floor(Math.random() * 1000000);
+  req.session.otpCode = otp;
+
+  const viewPath = req.app.get("views");
+  const html = await ejs.renderFile(
+    path.join(viewPath, "site/forgets/otp-sendAcc.ejs"),
+    {
+      otp,
+      full_name: user[0].full_name,
+    }
+  );
+  const info = await transporter.sendMail({
+    from: '"Manh Anh with love 👻" <ngomanhanh2k3@gmail.com>', // sender address
+    to: email, // list of receivers
+    subject: "Mã xác thực OTP cho tài khoản user VietProShop", // Subject line
+    html,
+  });
+
+  res.redirect("/forget/verify");
+};
+const otp = async (req, res) => {
+  const email = req.session.emailChanged;
+  res.render("site/forgets/OTP", { data: {}, email });
+};
+const validateOTP = async (req, res) => {
+  const email = req.session.emailChanged;
+  const otp = req.body.otp;
+  if (otp != req.session.otpCode) {
+    res.render("site/forgets/OTP", {
+      data: { error: "Mã OTP không đúng!" },
+      email,
+    });
+    return;
+  }
+  res.redirect("/forget/verify/password");
+};
+const password = async (req, res) => {
+  const email = req.session.emailChanged;
+  res.render("site/forgets/password", { data: {}, email });
+};
+const update = async (req, res) => {
+  const email = req.session.emailChanged;
+  const { password, confirmPassword } = req.body;
+  if (password != confirmPassword) {
+    res.render("site/forgets/password", {
+      data: { error: "Mật khẩu không khớp" },
+      email,
+    });
+    return;
+  }
+  delete req.session.emailChanged;
+  await UserModel.updateOne({ email }, { $set: { password } });
+  res.redirect("/login");
+};
 
 const home = async (req, res) => {
   const featured = await ProductModel.find({ featured: true })
@@ -129,12 +278,15 @@ const order = async (req, res) => {
   // console.log(body, items);
   // ../views/site/email-order.ejs
   // path.join: giúp hợp nhất url vào thành 1 ở đây là: /viewPath/site/email-order.ejs
-  const html = await ejs.renderFile(path.join(viewPath, "site/email-order.ejs"), {
-    ...body,
-    items,
-    formetter,
-    totalPrice
-  });
+  const html = await ejs.renderFile(
+    path.join(viewPath, "site/email-order.ejs"),
+    {
+      ...body,
+      items,
+      formetter,
+      totalPrice,
+    }
+  );
 
   const info = await transporter.sendMail({
     from: '"Manh Anh with love 👻" ngomanhanh2k3@gmail.com', // sender address
@@ -152,6 +304,18 @@ const success = (req, res) => {
 };
 
 module.exports = {
+  login,
+  postLogin,
+  signup,
+  createUser,
+  logout,
+  forget,
+  validateEmail,
+  otp,
+  validateOTP,
+  password,
+  update,
+
   home,
   category,
   product,

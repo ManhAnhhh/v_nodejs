@@ -35,42 +35,42 @@
                                     <table data-toolbar="#toolbar" data-toggle="table">
                                         <thead>
                                             <tr>
-                                                <th data-field="id" data-sortable="true">STT</th>
-                                                <th data-field="name" data-sortable="true">Tên sản phẩm</th>
-                                                <th data-field="price" data-sortable="true">Giá</th>
-                                                <th>Ảnh sản phẩm</th>
-                                                <th>Trạng thái</th>
-                                                <th>Danh mục</th>
-                                                <th>Hành động</th>
+                                                <th class="item-table" data-field="id" data-sortable="true">STT</th>
+                                                <th class="item-table" data-field="name" data-sortable="true">Tên sản phẩm</th>
+                                                <th class="item-table" data-field="price" data-sortable="true">Giá</th>
+                                                <th class="item-table">Ảnh sản phẩm</th>
+                                                <th class="item-table">Trạng thái</th>
+                                                <th class="item-table">Danh mục</th>
+                                                <th class="item-table">Hành động</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <% for(const product of products) {%>
 
                                                 <tr>
-                                                    <td>
+                                                    <td class="item-table">
                                                         <%=skip + 1%>
                                                     </td>
-                                                    <td>
+                                                    <td class="item-table">
                                                         <%=product.name%>
                                                     </td>
-                                                    <td>
+                                                    <td class="item-table">
                                                         <%=product.price%> vnd
                                                     </td>
                                                     <td style="text-align: center">
                                                         <img width="130" height="180"
                                                             src="../upload/images/<%=product.thumbnail%>" />
                                                     </td>
-                                                    <td>
+                                                    <td class="item-table">
                                                         <span
                                                             class="label label-<%=product.is_stock ? "success": "danger"%>">
                                                             <%= product.is_stock ? "Còn hàng" : "Hết hàng" %>
                                                         </span>
                                                     </td>
-                                                    <td>
+                                                    <td class="item-table">
                                                         <%=product.cat_id.title%>
                                                     </td>
-                                                    <td class="form-group">
+                                                    <td class="form-group action-item-table">
                                                         <a href="/admin/products/edit" class="btn btn-primary"><i
                                                                 class="glyphicon glyphicon-pencil"></i></a>
                                                         <a href="/admin/products/delete/<%=product._id%>"
